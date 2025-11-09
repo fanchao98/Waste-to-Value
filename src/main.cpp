@@ -11,10 +11,16 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include <direct.h>  // for _mkdir
+#include <direct.h>
+#include <sys/stat.h>
 
 using namespace msa::mcts;
 using namespace std;
+
+bool folderExists(const std::string& path) {
+    struct _stat info;
+    return (_stat(path.c_str(), &info) == 0 && (info.st_mode & _S_IFDIR));
+}
 
 int main(int argc, char* argv[])
 {
@@ -55,13 +61,13 @@ int main(int argc, char* argv[])
     std::string intersection = "output/" + mesh_target + "/D_I.off";
     refab.mesh_target = mesh_target;
 
-    // Create necessary folders
-    string path = refab.rootPath + "output/" + mesh_target;
-    _mkdir(path.c_str());
-    path = refab.rootPath + "temp_vis/" + mesh_target;
-    _mkdir(path.c_str());
-    path = refab.rootPath + "MCTS_temp/" + mesh_target;
-    _mkdir(path.c_str());
+    std::string output_dir = refab.rootPath + "output/" + mesh_target;
+    std::string temp_vis_dir = refab.rootPath + "temp_vis/" + mesh_target;
+    std::string mcts_temp_dir = refab.rootPath + "MCTS_temp/" + mesh_target;
+
+    if (!folderExists(output_dir)) _mkdir(output_dir.c_str());
+    if (!folderExists(temp_vis_dir)) _mkdir(temp_vis_dir.c_str());
+    if (!folderExists(mcts_temp_dir)) _mkdir(mcts_temp_dir.c_str());
 
     ofstream out_record(refab.rootPath + "output/" + mesh_target + "/record.txt");
 

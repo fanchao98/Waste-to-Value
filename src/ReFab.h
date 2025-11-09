@@ -134,6 +134,7 @@ struct Exact_vertex_point_map
     }
 };
 
+
 struct Vector_pmap_wrapper
 {
     std::vector<bool>& vect;
